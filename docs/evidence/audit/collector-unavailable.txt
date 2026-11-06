@@ -1,0 +1,4 @@
+deployment.apps/otel-collector scaled
+pod/otel-collector-fd766b946-5zwl5 condition met
+{'collector_replicas': 0, 'startup': 'ok', 'ready': 200, 'create': 201, 'get': 200, 'finish': 200}
+deployment.apps/otel-collector scaled

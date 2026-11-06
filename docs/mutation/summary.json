@@ -1,0 +1,68 @@
+{
+  "before": {
+    "gremlins": {
+      "domain": {
+        "test_efficacy": 100,
+        "mutations_coverage": 100,
+        "mutants_total": 19,
+        "mutants_killed": 19,
+        "mutants_lived": 0,
+        "mutants_not_viable": 0,
+        "mutants_not_covered": 0
+      },
+      "usecase": {
+        "test_efficacy": 100,
+        "mutations_coverage": 100,
+        "mutants_total": 10,
+        "mutants_killed": 10,
+        "mutants_lived": 0,
+        "mutants_not_viable": 0,
+        "mutants_not_covered": 0
+      }
+    },
+    "supplemental": {
+      "mutants_total": 8,
+      "mutants_killed": 0,
+      "mutants_lived": 8
+    },
+    "combined": {
+      "mutants_total": 37,
+      "mutants_killed": 29,
+      "mutants_lived": 8,
+      "score": 78.38
+    }
+  },
+  "after": {
+    "gremlins": {
+      "domain": {
+        "test_efficacy": 100,
+        "mutations_coverage": 100,
+        "mutants_total": 19,
+        "mutants_killed": 19,
+        "mutants_lived": 0,
+        "mutants_not_viable": 0,
+        "mutants_not_covered": 0
+      },
+      "usecase": {
+        "test_efficacy": 100,
+        "mutations_coverage": 100,
+        "mutants_total": 10,
+        "mutants_killed": 10,
+        "mutants_lived": 0,
+        "mutants_not_viable": 0,
+        "mutants_not_covered": 0
+      }
+    },
+    "supplemental": {
+      "mutants_total": 8,
+      "mutants_killed": 8,
+      "mutants_lived": 0
+    },
+    "combined": {
+      "mutants_total": 37,
+      "mutants_killed": 37,
+      "mutants_lived": 0,
+      "score": 100.0
+    }
+  }
+}

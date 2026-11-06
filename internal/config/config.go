@@ -8,6 +8,10 @@ import (
 )
 
 type Config struct {
+	OTelServiceName string
+	OTelProtocol    string
+	ServiceVersion  string
+
 	HTTPAddr                string
 	HTTPReadTimeout         time.Duration
 	HTTPReadHeaderTimeout   time.Duration
@@ -76,6 +80,26 @@ func Load() (Config, error) {
 
 	if cfg.DatabaseMaxConns < 1 || cfg.DatabaseMinConns < 0 || cfg.DatabaseMinConns > cfg.DatabaseMaxConns {
 		return Config{}, fmt.Errorf("DATABASE_MIN_CONNS must be between 0 and DATABASE_MAX_CONNS")
+	}
+
+	for _, setting := range []struct {
+		name   string
+		target *string
+	}{
+		{"OTEL_SERVICE_NAME", &cfg.OTelServiceName}, {"OTEL_EXPORTER_OTLP_PROTOCOL", &cfg.OTelProtocol}, {"SERVICE_VERSION", &cfg.ServiceVersion},
+	} {
+		if *setting.target, err = required(setting.name); err != nil {
+			return Config{}, err
+		}
+	}
+	if _, err = required("OTEL_EXPORTER_OTLP_ENDPOINT"); err != nil {
+		return Config{}, err
+	}
+	if _, err = required("OTEL_TRACES_SAMPLER"); err != nil {
+		return Config{}, err
+	}
+	if cfg.OTelProtocol != "grpc" && cfg.OTelProtocol != "http/protobuf" {
+		return Config{}, fmt.Errorf("OTEL_EXPORTER_OTLP_PROTOCOL must be grpc or http/protobuf")
 	}
 	return cfg, nil
 }

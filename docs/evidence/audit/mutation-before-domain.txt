@@ -1,0 +1,27 @@
+Starting...
+Gathering coverage... done in 1.716175625s
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:33:14
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:50:14
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:53:16
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:56:13
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:56:13
+      KILLED INVERT_LOGICAL at trip/trip.go:63:61
+      KILLED INVERT_LOGICAL at trip/trip.go:63:35
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:63:55
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:63:55
+      KILLED INVERT_NEGATIVES at trip/trip.go:63:57
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:63:81
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:63:81
+      KILLED INVERT_LOGICAL at trip/trip.go:66:64
+      KILLED INVERT_LOGICAL at trip/trip.go:66:36
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:66:57
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:66:57
+      KILLED INVERT_NEGATIVES at trip/trip.go:66:59
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:66:85
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:66:85
+
+Mutation testing completed in 5 seconds 769 milliseconds
+Killed: 19, Lived: 0, Not covered: 0
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 100.00%
+Mutator coverage: 100.00%

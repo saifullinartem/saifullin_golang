@@ -1,0 +1,23 @@
+?   	github.com/saifullinartem/saifullin_golang/api	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/cmd/trip-service	1.619s
+?   	github.com/saifullinartem/saifullin_golang/internal/config	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/container	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/domain/trip	2.780s
+ok  	github.com/saifullinartem/saifullin_golang/internal/http	2.477s
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/domainerror	1.793s
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/middleware	1.380s
+?   	github.com/saifullinartem/saifullin_golang/internal/http/respond	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/response	2.093s
+?   	github.com/saifullinartem/saifullin_golang/internal/http/routing	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/http/trip/convert	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/trip/create	2.299s
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/trip/finish	2.985s
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/trip/get	1.798s
+?   	github.com/saifullinartem/saifullin_golang/internal/infra/postgres	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/infra/postgres/transaction	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/infra/telemetry	1.934s
+?   	github.com/saifullinartem/saifullin_golang/internal/model	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/repository/trip	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/create	2.059s
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/finish	2.069s
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/get	2.162s
