@@ -1,0 +1,99 @@
+{
+  "protocol": "http/protobuf",
+  "version": "lab2-audit-http",
+  "requests": 13,
+  "statuses": {
+    "200": 4,
+    "201": 1,
+    "409": 2,
+    "404": 2,
+    "400": 2,
+    "405": 2
+  },
+  "trace_id": "71e46d8f70964f5379cc7859afff7990",
+  "jaeger_spans": 5,
+  "prometheus_405_method": "DELETE",
+  "prometheus_405_count": 2,
+  "shutdown_exit_code": 0,
+  "shutdown_seconds": 0.017,
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/ready",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/trips/4f6587cc-4390-4f2e-8159-6557fa5ab2aa",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 409,
+      "code": "driver_busy"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips/4f6587cc-4390-4f2e-8159-6557fa5ab2aa/finish",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips/4f6587cc-4390-4f2e-8159-6557fa5ab2aa/finish",
+      "status": 409,
+      "code": "trip_completed"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/trips/0ac1fd74-5cd5-4445-980e-91389ddba894",
+      "status": 404,
+      "code": "trip_not_found"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 400,
+      "code": "invalid_request"
+    },
+    {
+      "method": "GET",
+      "path": "/unknown",
+      "status": 404,
+      "code": "not_found"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/trips/4f6587cc-4390-4f2e-8159-6557fa5ab2aa",
+      "status": 405,
+      "code": "method_not_allowed"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/trips/4f6587cc-4390-4f2e-8159-6557fa5ab2aa",
+      "status": 405,
+      "code": "method_not_allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 400,
+      "code": "invalid_request"
+    }
+  ]
+}

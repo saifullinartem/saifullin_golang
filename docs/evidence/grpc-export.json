@@ -1,0 +1,8 @@
+{
+  "protocol": "grpc",
+  "create": 201,
+  "finish": 200,
+  "shutdown_exit_code": 0,
+  "trace_id": "f332f35fdd541b62183fe18af7cc4d3a",
+  "jaeger_spans": 5
+}

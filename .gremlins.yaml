@@ -1,0 +1,27 @@
+unleash:
+  workers: 2
+  test-cpu: 0
+  timeout-coefficient: 20
+mutants:
+  arithmetic-base:
+    enabled: false
+  conditionals-boundary:
+    enabled: true
+  conditionals-negation:
+    enabled: true
+  increment-decrement:
+    enabled: true
+  invert-assignments:
+    enabled: true
+  invert-bitwise:
+    enabled: false
+  invert-bwassign:
+    enabled: true
+  invert-negatives:
+    enabled: true
+  invert-logical:
+    enabled: true
+  invert-loopctrl:
+    enabled: true
+  remove-self-assignments:
+    enabled: true

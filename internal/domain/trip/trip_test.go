@@ -1,0 +1,99 @@
+package trip_test
+
+import (
+	"errors"
+	"math"
+	"reflect"
+	"testing"
+	"time"
+
+	"github.com/google/uuid"
+
+	"github.com/saifullinartem/saifullin_golang/internal/domain/trip"
+)
+
+const priceField = "price"
+
+func TestFinish(t *testing.T) {
+	at := time.Date(2026, 9, 1, 12, 0, 0, 0, time.UTC)
+	for _, tt := range []struct {
+		name, status string
+		want         error
+	}{{"active", trip.Active, nil}, {"completed", trip.Completed, trip.ErrTripCompleted}, {"unknown", "unknown", trip.ErrTripCompleted}} {
+		t.Run(tt.name, func(t *testing.T) {
+			value := trip.Trip{ID: uuid.New(), Status: tt.status}
+			before := value
+			err := value.Finish(at)
+			if !errors.Is(err, tt.want) {
+				t.Fatalf("Finish error=%v, want %v", err, tt.want)
+			}
+			if tt.want != nil {
+				if !reflect.DeepEqual(before, value) {
+					t.Fatal("failed transition changed trip")
+				}
+				return
+			}
+			if value.Status != trip.Completed || value.FinishedAt == nil || !value.FinishedAt.Equal(at) || value.ID != before.ID {
+				t.Fatalf("invalid transition: %+v", value)
+			}
+		})
+	}
+}
+
+func TestValidate(t *testing.T) {
+	for _, tt := range []struct {
+		name, field string
+		change      func(*trip.CreateInput)
+	}{
+		{"valid", "", func(_ *trip.CreateInput) {}},
+		{"zero user", "user_id", func(i *trip.CreateInput) { i.UserID = uuid.Nil }},
+		{"zero driver", "driver_id", func(i *trip.CreateInput) { i.DriverID = uuid.Nil }},
+		{"negative price", priceField, func(i *trip.CreateInput) { i.Price = -1 }},
+		{"start latitude low", "start_point.latitude", func(i *trip.CreateInput) { i.StartPoint.Latitude = -90.01 }},
+		{"start latitude high", "start_point.latitude", func(i *trip.CreateInput) { i.StartPoint.Latitude = 90.01 }},
+		{"start longitude low", "start_point.longitude", func(i *trip.CreateInput) { i.StartPoint.Longitude = -180.01 }},
+		{"start longitude high", "start_point.longitude", func(i *trip.CreateInput) { i.StartPoint.Longitude = 180.01 }},
+		{"end latitude", "end_point.latitude", func(i *trip.CreateInput) { i.EndPoint.Latitude = 91 }},
+		{"end longitude", "end_point.longitude", func(i *trip.CreateInput) { i.EndPoint.Longitude = 181 }},
+		{"nan latitude", "end_point.latitude", func(i *trip.CreateInput) { i.EndPoint.Latitude = math.NaN() }},
+		{"nan longitude", "end_point.longitude", func(i *trip.CreateInput) { i.EndPoint.Longitude = math.NaN() }},
+		{"boundaries", "", func(i *trip.CreateInput) {
+			i.StartPoint = trip.Coordinates{Latitude: -90, Longitude: -180}
+			i.EndPoint = trip.Coordinates{Latitude: 90, Longitude: 180}
+		}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			i := trip.CreateInput{UserID: uuid.New(), DriverID: uuid.New()}
+			tt.change(&i)
+			err := i.Validate()
+			if tt.field == "" {
+				if err != nil {
+					t.Fatal(err)
+				}
+				return
+			}
+			var validation *trip.ValidationError
+			if !errors.As(err, &validation) || validation.Field != tt.field || validation.Reason == "" || validation.Error() == "" {
+				t.Fatalf("validation=%v, want field %s", err, tt.field)
+			}
+		})
+	}
+}
+
+func TestValidationError(t *testing.T) {
+	value := &trip.ValidationError{Field: priceField, Reason: "must be non-negative"}
+	if got, want := value.Error(), "price: must be non-negative"; got != want {
+		t.Fatalf("Error=%q,want %q", got, want)
+	}
+}
+
+func TestValidationCause(t *testing.T) {
+	cause := errors.New("decoder failure")
+	value := &trip.ValidationError{Field: priceField, Reason: "must be an integer", Cause: cause}
+	if !errors.Is(value, cause) || value.Unwrap() != cause {
+		t.Fatal("validation cause lost")
+	}
+	if (&trip.ValidationError{}).Unwrap() != nil {
+		t.Fatal("unexpected validation cause")
+	}
+}

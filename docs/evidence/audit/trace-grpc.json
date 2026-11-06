@@ -1,0 +1,350 @@
+{
+  "data": [
+    {
+      "traceID": "6061baa225564408a4346ca0aa2cecb7",
+      "spans": [
+        {
+          "traceID": "6061baa225564408a4346ca0aa2cecb7",
+          "spanID": "a2e58ab57f4a1d33",
+          "operationName": "POST /api/v1/trips",
+          "references": [],
+          "startTime": 1793989324862156,
+          "duration": 16336,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+            },
+            {
+              "key": "otel.scope.version",
+              "type": "string",
+              "value": "0.71.0"
+            },
+            {
+              "key": "client.address",
+              "type": "string",
+              "value": "127.0.0.1"
+            },
+            {
+              "key": "http.request.body.size",
+              "type": "int64",
+              "value": 225
+            },
+            {
+              "key": "http.request.method",
+              "type": "string",
+              "value": "POST"
+            },
+            {
+              "key": "http.response.body.size",
+              "type": "int64",
+              "value": 316
+            },
+            {
+              "key": "http.response.status_code",
+              "type": "int64",
+              "value": 201
+            },
+            {
+              "key": "http.route",
+              "type": "string",
+              "value": "/api/v1/trips"
+            },
+            {
+              "key": "network.peer.address",
+              "type": "string",
+              "value": "127.0.0.1"
+            },
+            {
+              "key": "network.peer.port",
+              "type": "int64",
+              "value": 60270
+            },
+            {
+              "key": "network.protocol.version",
+              "type": "string",
+              "value": "1.1"
+            },
+            {
+              "key": "server.address",
+              "type": "string",
+              "value": "127.0.0.1"
+            },
+            {
+              "key": "server.port",
+              "type": "int64",
+              "value": 18084
+            },
+            {
+              "key": "url.path",
+              "type": "string",
+              "value": "/api/v1/trips"
+            },
+            {
+              "key": "url.scheme",
+              "type": "string",
+              "value": "http"
+            },
+            {
+              "key": "user_agent.original",
+              "type": "string",
+              "value": "Python-urllib/3.12"
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "server"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6061baa225564408a4346ca0aa2cecb7",
+          "spanID": "02cc1719397af62a",
+          "operationName": "BEGIN",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6061baa225564408a4346ca0aa2cecb7",
+              "spanID": "a2e58ab57f4a1d33"
+            }
+          ],
+          "startTime": 1793989324862289,
+          "duration": 1243,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "github.com/exaring/otelpgx"
+            },
+            {
+              "key": "otel.scope.version",
+              "type": "string",
+              "value": "v0.13.0"
+            },
+            {
+              "key": "db.collection.name",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "key": "db.operation.name",
+              "type": "string",
+              "value": "BEGIN"
+            },
+            {
+              "key": "db.system.name",
+              "type": "string",
+              "value": "postgresql"
+            },
+            {
+              "key": "pgx.rows_affected",
+              "type": "int64",
+              "value": 0
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "client"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6061baa225564408a4346ca0aa2cecb7",
+          "spanID": "e533c14ec009decc",
+          "operationName": "INSERT",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6061baa225564408a4346ca0aa2cecb7",
+              "spanID": "a2e58ab57f4a1d33"
+            }
+          ],
+          "startTime": 1793989324863582,
+          "duration": 9558,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "github.com/exaring/otelpgx"
+            },
+            {
+              "key": "otel.scope.version",
+              "type": "string",
+              "value": "v0.13.0"
+            },
+            {
+              "key": "db.collection.name",
+              "type": "string",
+              "value": "trips"
+            },
+            {
+              "key": "db.operation.name",
+              "type": "string",
+              "value": "INSERT"
+            },
+            {
+              "key": "db.system.name",
+              "type": "string",
+              "value": "postgresql"
+            },
+            {
+              "key": "pgx.rows_affected",
+              "type": "int64",
+              "value": 1
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "client"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6061baa225564408a4346ca0aa2cecb7",
+          "spanID": "9a5e003ce8cfbe33",
+          "operationName": "INSERT",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6061baa225564408a4346ca0aa2cecb7",
+              "spanID": "a2e58ab57f4a1d33"
+            }
+          ],
+          "startTime": 1793989324873183,
+          "duration": 4177,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "github.com/exaring/otelpgx"
+            },
+            {
+              "key": "otel.scope.version",
+              "type": "string",
+              "value": "v0.13.0"
+            },
+            {
+              "key": "db.collection.name",
+              "type": "string",
+              "value": "trip_status_history"
+            },
+            {
+              "key": "db.operation.name",
+              "type": "string",
+              "value": "INSERT"
+            },
+            {
+              "key": "db.system.name",
+              "type": "string",
+              "value": "postgresql"
+            },
+            {
+              "key": "pgx.rows_affected",
+              "type": "int64",
+              "value": 1
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "client"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        },
+        {
+          "traceID": "6061baa225564408a4346ca0aa2cecb7",
+          "spanID": "65e02a9f9bf229f0",
+          "operationName": "COMMIT",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "6061baa225564408a4346ca0aa2cecb7",
+              "spanID": "a2e58ab57f4a1d33"
+            }
+          ],
+          "startTime": 1793989324877379,
+          "duration": 967,
+          "tags": [
+            {
+              "key": "otel.scope.name",
+              "type": "string",
+              "value": "github.com/exaring/otelpgx"
+            },
+            {
+              "key": "otel.scope.version",
+              "type": "string",
+              "value": "v0.13.0"
+            },
+            {
+              "key": "db.collection.name",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "key": "db.operation.name",
+              "type": "string",
+              "value": "COMMIT"
+            },
+            {
+              "key": "db.system.name",
+              "type": "string",
+              "value": "postgresql"
+            },
+            {
+              "key": "pgx.rows_affected",
+              "type": "int64",
+              "value": 0
+            },
+            {
+              "key": "span.kind",
+              "type": "string",
+              "value": "client"
+            }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": null
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "trip-service",
+          "tags": [
+            {
+              "key": "deployment.environment",
+              "type": "string",
+              "value": "local"
+            },
+            {
+              "key": "service.namespace",
+              "type": "string",
+              "value": "tripgo"
+            },
+            {
+              "key": "service.version",
+              "type": "string",
+              "value": "lab2-audit-grpc"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ],
+  "total": 0,
+  "limit": 0,
+  "offset": 0,
+  "errors": null
+}

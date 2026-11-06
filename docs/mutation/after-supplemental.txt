@@ -1,0 +1,9 @@
+KILLED validation_without_field
+KILLED validation_without_reason
+KILLED create_without_utc
+KILLED create_keep_nanoseconds
+KILLED create_without_log
+KILLED finish_without_utc
+KILLED finish_keep_nanoseconds
+KILLED finish_without_log
+Total: 8, killed: 8, lived: 0

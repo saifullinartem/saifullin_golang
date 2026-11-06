@@ -1,0 +1,105 @@
+{
+  "protocol": "grpc",
+  "version": "lab2-audit-grpc",
+  "requests": 14,
+  "statuses": {
+    "200": 4,
+    "201": 1,
+    "409": 2,
+    "404": 2,
+    "400": 2,
+    "405": 3
+  },
+  "trace_id": "6061baa225564408a4346ca0aa2cecb7",
+  "jaeger_spans": 5,
+  "prometheus_405_method": "PATCH",
+  "prometheus_405_count": 3,
+  "shutdown_exit_code": 0,
+  "shutdown_seconds": 0.175,
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/ready",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/trips/1bb1aea8-6f83-4b3b-b88d-fc55b4e9b0a7",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 409,
+      "code": "driver_busy"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips/1bb1aea8-6f83-4b3b-b88d-fc55b4e9b0a7/finish",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips/1bb1aea8-6f83-4b3b-b88d-fc55b4e9b0a7/finish",
+      "status": 409,
+      "code": "trip_completed"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/trips/64410b52-1963-4601-9c7a-3c5867d2ed4c",
+      "status": 404,
+      "code": "trip_not_found"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 400,
+      "code": "invalid_request"
+    },
+    {
+      "method": "GET",
+      "path": "/unknown",
+      "status": 404,
+      "code": "not_found"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/trips/1bb1aea8-6f83-4b3b-b88d-fc55b4e9b0a7",
+      "status": 405,
+      "code": "method_not_allowed"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/trips/1bb1aea8-6f83-4b3b-b88d-fc55b4e9b0a7",
+      "status": 405,
+      "code": "method_not_allowed"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/trips/1bb1aea8-6f83-4b3b-b88d-fc55b4e9b0a7",
+      "status": 405,
+      "code": "method_not_allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/trips",
+      "status": 400,
+      "code": "invalid_request"
+    }
+  ]
+}

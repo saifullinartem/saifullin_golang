@@ -1,0 +1,28 @@
+{
+  "experiment_date": "2026-11-06",
+  "tool": "github.com/go-gremlins/gremlins/cmd/gremlins@v0.6.0",
+  "go": "go1.26.0",
+  "race": true,
+  "production_unchanged_between_runs": true,
+  "baseline_tests_origin": "Original tests before strengthening, replayed on the current production code",
+  "production_sha256": {
+    "internal/domain/trip/errors.go": "0468f4943cb09309affd1aebd0d2890579648ea8b6ae7371a9a9d141a866f383",
+    "internal/domain/trip/trip.go": "6decf7c0229f6cb0894679eea0feb620537e1c46b329024df27a325af266bf19",
+    "internal/usecase/trip/create/contract.go": "702c0a60f438e1ce0d71e8613cd504ae499c5e038d3e508657b7f1a00cca9552",
+    "internal/usecase/trip/create/usecase.go": "75f2a7da855db2e5e38bd60148c9d456344021729290b57a2c475e1ebc073339",
+    "internal/usecase/trip/finish/contract.go": "99739c15c64da8957f2adfeedd485b486b481d7c532326c887a3b0bc491864ac",
+    "internal/usecase/trip/finish/usecase.go": "dcc17cdad8c3aeafb8139e911760a4ae82adbde72f4fd90a2c9ad0e3328b9cbd",
+    "internal/usecase/trip/get/contract.go": "4ddc297793b1820fec6fb6d1b0db9e7301808d3ac8151f8ce925fa7666aa1974",
+    "internal/usecase/trip/get/usecase.go": "47011e42007ff83abbfa247216e38e1b3c311e67502e2185771dc5973c86a31e"
+  },
+  "before_test_sha256": {
+    "internal/domain/trip/trip_test.go": "30e678240601b42bdc714683ab09c12639090a320dcff0834bc44a6dbd8ccab2",
+    "internal/usecase/trip/create/usecase_test.go": "ad3468f52f1500e1c085b1627df6d1a66b4edb1554cf4fc76a52167acccbea3f",
+    "internal/usecase/trip/finish/usecase_test.go": "65e659700fcbbf2806648f2551550ab007a7d21a47879c026f3687fc84d39234"
+  },
+  "after_test_sha256": {
+    "internal/domain/trip/trip_test.go": "7701d1b27ffaacdbbf18d0a0d2f408090bf6f7ececba93afb82a118ad61970f8",
+    "internal/usecase/trip/create/usecase_test.go": "6131dbeb32a3ee392c8a2f7ef972388fe33185fce8dcd712b0a5c60c375afcf0",
+    "internal/usecase/trip/finish/usecase_test.go": "2af8246d14d8279be834ed75cd8bd9bea7a7745781be88c56847d9a1004706e2"
+  }
+}
