@@ -1,0 +1,11 @@
+{"time":"2026-11-06T21:23:30.513927+03:00","level":"INFO","msg":"HTTP server listening","service":"trip-service","address":"127.0.0.1:18082","trace_id":"","span_id":""}
+{"time":"2026-11-06T21:23:30.569479+03:00","level":"INFO","msg":"request handled","service":"trip-service","method":"GET","route":"/ready","status":200,"duration_ms":1.289,"trace_id":"bbddfc45e99f96be2d4ba6759f82ed43","span_id":"18b02428fd73cf5b"}
+{"time":"2026-11-06T21:23:30.580863+03:00","level":"INFO","msg":"trip created","service":"trip-service","trip_id":"514925b3-87c0-44f0-8ba1-724d091fcdd5","trace_id":"f48a6c11bb33b4e52b85d47d49907d77","span_id":"ffe8baf8ad2679cc"}
+{"time":"2026-11-06T21:23:30.580953+03:00","level":"INFO","msg":"request handled","service":"trip-service","method":"POST","route":"/api/v1/trips","status":201,"duration_ms":10.57,"trace_id":"f48a6c11bb33b4e52b85d47d49907d77","span_id":"ffe8baf8ad2679cc"}
+{"time":"2026-11-06T21:23:30.583018+03:00","level":"INFO","msg":"request handled","service":"trip-service","method":"GET","route":"/api/v1/trips/{tripId}","status":200,"duration_ms":1.177,"trace_id":"28eb536c13b1058cd13d797a1cee155e","span_id":"2ba9267033865b37"}
+{"time":"2026-11-06T21:23:30.585599+03:00","level":"INFO","msg":"trip completed","service":"trip-service","trip_id":"514925b3-87c0-44f0-8ba1-724d091fcdd5","trace_id":"8d95cf2fc970390a0c4a917af0109f6c","span_id":"1cf0b803a8a58ce2"}
+{"time":"2026-11-06T21:23:30.58563+03:00","level":"INFO","msg":"request handled","service":"trip-service","method":"POST","route":"/api/v1/trips/{tripId}/finish","status":200,"duration_ms":2.29,"trace_id":"8d95cf2fc970390a0c4a917af0109f6c","span_id":"1cf0b803a8a58ce2"}
+2026/11/06 21:23:35 failed to upload metrics: Post "http://localhost:22318/v1/metrics": EOF
+2026/11/06 21:23:37 traces export: Post "http://localhost:22318/v1/traces": EOF
+{"time":"2026-11-06T21:23:37.312462+03:00","level":"WARN","msg":"telemetry shutdown incomplete","service":"trip-service","error":"failed to upload metrics: Post \"http://localhost:22318/v1/metrics\": EOF","trace_id":"","span_id":""}
+{"time":"2026-11-06T21:23:37.313349+03:00","level":"INFO","msg":"service stopped","service":"trip-service","trace_id":"","span_id":""}

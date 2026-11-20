@@ -4,21 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/saifullinartem/saifullin_golang/internal/config"
-	"github.com/saifullinartem/saifullin_golang/internal/database"
-	"github.com/saifullinartem/saifullin_golang/internal/httpserver"
-	"github.com/saifullinartem/saifullin_golang/internal/trip"
+	"github.com/saifullinartem/saifullin_golang/internal/container"
 )
 
 func main() {
 	if err := run(); err != nil {
-		slog.Error("trip service stopped", "error", err)
+		container.LogError(context.Background(), err)
 		os.Exit(1)
 	}
 }
@@ -29,52 +26,38 @@ func run() error {
 		return err
 	}
 
-	var level slog.Level
-	switch cfg.LogLevel {
-	case "debug":
-		level = slog.LevelDebug
-	case "warn":
-		level = slog.LevelWarn
-	case "error":
-		level = slog.LevelError
-	default:
-		level = slog.LevelInfo
-	}
-	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})))
-
-	pool, err := database.Open(context.Background(), cfg)
+	app, err := container.New(context.Background(), cfg)
 	if err != nil {
 		return err
 	}
-	defer pool.Close()
-	repository := trip.NewRepository(pool, cfg.DatabaseQueryTimeout)
-	history := trip.NewHistoryRepository(pool, cfg.DatabaseQueryTimeout)
-	tx := database.NewTxManager(pool, cfg.DatabaseQueryTimeout)
-	service := trip.NewService(repository, history, tx)
-	server := httpserver.New(cfg, pool, cfg.DatabaseQueryTimeout, service)
+	server := app.Server
 	serverErrors := make(chan error, 1)
 	go func() {
-		slog.Info("HTTP server listening", "address", cfg.HTTPAddr)
+		app.Logger.Info("HTTP server listening", "address", cfg.HTTPAddr)
 		serverErrors <- server.ListenAndServe()
 	}()
 
 	signals, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	var serveErr error
 	select {
-	case err := <-serverErrors:
-		if errors.Is(err, http.ErrServerClosed) {
-			return nil
+	case serveErr = <-serverErrors:
+		if errors.Is(serveErr, http.ErrServerClosed) {
+			serveErr = nil
 		}
-		return err
 	case <-signals.Done():
 	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
 	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
-		closeErr := server.Close()
-		return errors.Join(fmt.Errorf("HTTP shutdown did not complete within SHUTDOWN_TIMEOUT: %w", err), closeErr)
+	shutdownErr := server.Shutdown(ctx)
+	if shutdownErr != nil {
+		shutdownErr = errors.Join(fmt.Errorf("HTTP shutdown did not complete within SHUTDOWN_TIMEOUT: %w", shutdownErr), server.Close())
 	}
+	closeErr := closeWithinContext(ctx, app)
+	if err := errors.Join(serveErr, shutdownErr, closeErr); err != nil {
+		return err
+	}
+	app.Logger.Info("service stopped")
 	return nil
 }

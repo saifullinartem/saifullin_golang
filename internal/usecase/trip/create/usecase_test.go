@@ -1,0 +1,125 @@
+package create_test
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"errors"
+	"io"
+	"log/slog"
+	"reflect"
+	"testing"
+	"time"
+
+	"github.com/google/uuid"
+	"go.uber.org/mock/gomock"
+
+	"github.com/saifullinartem/saifullin_golang/internal/domain/trip"
+	"github.com/saifullinartem/saifullin_golang/internal/model"
+	"github.com/saifullinartem/saifullin_golang/internal/usecase/trip/create"
+)
+
+func TestCreate(t *testing.T) {
+	failed := errors.New("database unavailable")
+	for _, tt := range []struct {
+		name                                  string
+		repoErr, historyErr, txErr, commitErr error
+	}{{name: "success"}, {name: "driver busy", repoErr: trip.ErrDriverBusy}, {name: "repository failure", repoErr: failed}, {name: "history failure", historyErr: failed}, {name: "transaction failure", txErr: failed}, {name: "commit failure", commitErr: failed}} {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			repo := NewMocktripRepository(ctrl)
+			history := NewMockhistoryRepository(ctrl)
+			tx := NewMocktxManager(ctrl)
+			clock := NewMockclock(ctrl)
+			events := NewMockevents(ctrl)
+			ctx := context.Background()
+			rawAt := time.Date(2026, 9, 1, 12, 0, 0, 123456789, time.FixedZone("UTC+3", 3*60*60))
+			at := rawAt.UTC().Truncate(time.Microsecond)
+			input := model.CreateInput{UserID: uuid.New(), DriverID: uuid.New(), Price: 1450, StartPoint: model.Coordinates{Latitude: 59, Longitude: 30}, EndPoint: model.Coordinates{Latitude: 60, Longitude: 31}}
+			clock.EXPECT().Now().Return(rawAt)
+			tx.EXPECT().Do(ctx, gomock.Any()).DoAndReturn(func(ctx context.Context, fn func(context.Context) error) error {
+				if tt.txErr != nil {
+					return tt.txErr
+				}
+				if err := fn(ctx); err != nil {
+					return err
+				}
+				return tt.commitErr
+			})
+			var saved model.Trip
+			if tt.txErr == nil {
+				repo.EXPECT().Create(ctx, gomock.Any()).DoAndReturn(func(_ context.Context, value model.Trip) error { saved = value; return tt.repoErr })
+				if tt.repoErr == nil {
+					history.EXPECT().Add(ctx, gomock.Any()).DoAndReturn(func(_ context.Context, change model.StatusChange) error {
+						if change.TripID != saved.ID || change.ToStatus != trip.Active || change.FromStatus != nil || !change.ChangedAt.Equal(at) {
+							t.Fatalf("incorrect history: %+v", change)
+						}
+						return tt.historyErr
+					})
+				}
+			}
+			wantErr := errors.Join(tt.repoErr, tt.historyErr, tt.txErr, tt.commitErr)
+			if wantErr == nil {
+				events.EXPECT().Created(ctx)
+			}
+			var logs bytes.Buffer
+			u := create.New(repo, history, tx, clock, events, slog.New(slog.NewJSONHandler(&logs, nil)))
+			got, err := u.Create(ctx, input)
+			if wantErr == nil {
+				assertBusinessLog(t, logs.Bytes(), "trip created", got.ID)
+			} else if logs.Len() != 0 {
+				t.Fatal("failed transaction emitted a business log")
+			}
+			if wantErr != nil {
+				assertWrapped(t, err, tt.repoErr, tt.historyErr, tt.txErr, tt.commitErr)
+				if !reflect.DeepEqual(got, model.Trip{}) {
+					t.Fatal("failed create returned trip")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !reflect.DeepEqual(got, saved) || got.ID == uuid.Nil || got.UserID != input.UserID || got.DriverID != input.DriverID || got.Price != input.Price || got.StartPoint != input.StartPoint || got.EndPoint != input.EndPoint || got.Status != trip.Active || !got.StartedAt.Equal(at) || got.FinishedAt != nil || got.StartedAt.Location() != time.UTC {
+				t.Fatalf("incorrect trip: %+v", got)
+			}
+		})
+	}
+}
+
+func TestCreateInvalid(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	u := create.New(NewMocktripRepository(ctrl), NewMockhistoryRepository(ctrl), NewMocktxManager(ctrl), NewMockclock(ctrl), NewMockevents(ctrl), slog.New(slog.NewTextHandler(io.Discard, nil)))
+	_, err := u.Create(context.Background(), model.CreateInput{})
+	var invalid *trip.ValidationError
+	if !errors.As(err, &invalid) {
+		t.Fatalf("error=%v", err)
+	}
+}
+
+func assertWrapped(t *testing.T, got error, wants ...error) {
+	t.Helper()
+	if got == nil {
+		t.Fatal("expected error")
+	}
+	for _, want := range wants {
+		if want != nil && !errors.Is(got, want) {
+			t.Fatalf("error=%v,want wrapped %v", got, want)
+		}
+	}
+}
+
+func assertBusinessLog(t *testing.T, data []byte, message string, id uuid.UUID) {
+	t.Helper()
+	var event struct {
+		Message string `json:"msg"`
+		Level   string `json:"level"`
+		TripID  string `json:"trip_id"`
+	}
+	if err := json.Unmarshal(data, &event); err != nil {
+		t.Fatalf("business log: %v", err)
+	}
+	if event.Message != message || event.Level != "INFO" || event.TripID != id.String() {
+		t.Fatalf("business log=%s", data)
+	}
+}

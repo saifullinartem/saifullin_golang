@@ -1,0 +1,181 @@
+--- a/internal/domain/trip/trip_test.go
++++ b/internal/domain/trip/trip_test.go
+@@ -11,6 +11,8 @@
+ 
+ 	"github.com/saifullinartem/saifullin_golang/internal/domain/trip"
+ )
++
++const priceField = "price"
+ 
+ func TestFinish(t *testing.T) {
+ 	at := time.Date(2026, 9, 1, 12, 0, 0, 0, time.UTC)
+@@ -46,7 +48,7 @@
+ 		{"valid", "", func(_ *trip.CreateInput) {}},
+ 		{"zero user", "user_id", func(i *trip.CreateInput) { i.UserID = uuid.Nil }},
+ 		{"zero driver", "driver_id", func(i *trip.CreateInput) { i.DriverID = uuid.Nil }},
+-		{"negative price", "price", func(i *trip.CreateInput) { i.Price = -1 }},
++		{"negative price", priceField, func(i *trip.CreateInput) { i.Price = -1 }},
+ 		{"start latitude low", "start_point.latitude", func(i *trip.CreateInput) { i.StartPoint.Latitude = -90.01 }},
+ 		{"start latitude high", "start_point.latitude", func(i *trip.CreateInput) { i.StartPoint.Latitude = 90.01 }},
+ 		{"start longitude low", "start_point.longitude", func(i *trip.CreateInput) { i.StartPoint.Longitude = -180.01 }},
+@@ -77,3 +79,21 @@
+ 		})
+ 	}
+ }
++
++func TestValidationError(t *testing.T) {
++	value := &trip.ValidationError{Field: priceField, Reason: "must be non-negative"}
++	if got, want := value.Error(), "price: must be non-negative"; got != want {
++		t.Fatalf("Error=%q,want %q", got, want)
++	}
++}
++
++func TestValidationCause(t *testing.T) {
++	cause := errors.New("decoder failure")
++	value := &trip.ValidationError{Field: priceField, Reason: "must be an integer", Cause: cause}
++	if !errors.Is(value, cause) || value.Unwrap() != cause {
++		t.Fatal("validation cause lost")
++	}
++	if (&trip.ValidationError{}).Unwrap() != nil {
++		t.Fatal("unexpected validation cause")
++	}
++}
+--- a/internal/usecase/trip/create/usecase_test.go
++++ b/internal/usecase/trip/create/usecase_test.go
+@@ -1,7 +1,9 @@
+ package create_test
+ 
+ import (
++	"bytes"
+ 	"context"
++	"encoding/json"
+ 	"errors"
+ 	"io"
+ 	"log/slog"
+@@ -31,9 +33,10 @@
+ 			clock := NewMockclock(ctrl)
+ 			events := NewMockevents(ctrl)
+ 			ctx := context.Background()
+-			at := time.Date(2026, 9, 1, 12, 0, 0, 123000, time.UTC)
++			rawAt := time.Date(2026, 9, 1, 12, 0, 0, 123456789, time.FixedZone("UTC+3", 3*60*60))
++			at := rawAt.UTC().Truncate(time.Microsecond)
+ 			input := model.CreateInput{UserID: uuid.New(), DriverID: uuid.New(), Price: 1450, StartPoint: model.Coordinates{Latitude: 59, Longitude: 30}, EndPoint: model.Coordinates{Latitude: 60, Longitude: 31}}
+-			clock.EXPECT().Now().Return(at)
++			clock.EXPECT().Now().Return(rawAt)
+ 			tx.EXPECT().Do(ctx, gomock.Any()).DoAndReturn(func(ctx context.Context, fn func(context.Context) error) error {
+ 				if tt.txErr != nil {
+ 					return tt.txErr
+@@ -59,8 +62,14 @@
+ 			if wantErr == nil {
+ 				events.EXPECT().Created(ctx)
+ 			}
+-			u := create.New(repo, history, tx, clock, events, slog.New(slog.NewTextHandler(io.Discard, nil)))
++			var logs bytes.Buffer
++			u := create.New(repo, history, tx, clock, events, slog.New(slog.NewJSONHandler(&logs, nil)))
+ 			got, err := u.Create(ctx, input)
++			if wantErr == nil {
++				assertBusinessLog(t, logs.Bytes(), "trip created", got.ID)
++			} else if logs.Len() != 0 {
++				t.Fatal("failed transaction emitted a business log")
++			}
+ 			if wantErr != nil {
+ 				assertWrapped(t, err, tt.repoErr, tt.historyErr, tt.txErr, tt.commitErr)
+ 				if !reflect.DeepEqual(got, model.Trip{}) {
+@@ -71,7 +80,7 @@
+ 			if err != nil {
+ 				t.Fatal(err)
+ 			}
+-			if !reflect.DeepEqual(got, saved) || got.ID == uuid.Nil || got.UserID != input.UserID || got.DriverID != input.DriverID || got.Price != input.Price || got.StartPoint != input.StartPoint || got.EndPoint != input.EndPoint || got.Status != trip.Active || !got.StartedAt.Equal(at) || got.FinishedAt != nil {
++			if !reflect.DeepEqual(got, saved) || got.ID == uuid.Nil || got.UserID != input.UserID || got.DriverID != input.DriverID || got.Price != input.Price || got.StartPoint != input.StartPoint || got.EndPoint != input.EndPoint || got.Status != trip.Active || !got.StartedAt.Equal(at) || got.FinishedAt != nil || got.StartedAt.Location() != time.UTC {
+ 				t.Fatalf("incorrect trip: %+v", got)
+ 			}
+ 		})
+@@ -99,3 +108,18 @@
+ 		}
+ 	}
+ }
++
++func assertBusinessLog(t *testing.T, data []byte, message string, id uuid.UUID) {
++	t.Helper()
++	var event struct {
++		Message string `json:"msg"`
++		Level   string `json:"level"`
++		TripID  string `json:"trip_id"`
++	}
++	if err := json.Unmarshal(data, &event); err != nil {
++		t.Fatalf("business log: %v", err)
++	}
++	if event.Message != message || event.Level != "INFO" || event.TripID != id.String() {
++		t.Fatalf("business log=%s", data)
++	}
++}
+--- a/internal/usecase/trip/finish/usecase_test.go
++++ b/internal/usecase/trip/finish/usecase_test.go
+@@ -1,9 +1,10 @@
+ package finish_test
+ 
+ import (
++	"bytes"
+ 	"context"
++	"encoding/json"
+ 	"errors"
+-	"io"
+ 	"log/slog"
+ 	"reflect"
+ 	"testing"
+@@ -42,7 +43,8 @@
+ 			events := NewMockevents(ctrl)
+ 			ctx := context.Background()
+ 			id := uuid.New()
+-			at := time.Date(2026, 9, 1, 12, 0, 0, 0, time.UTC)
++			rawAt := time.Date(2026, 9, 1, 12, 0, 0, 123456789, time.FixedZone("UTC+3", 3*60*60))
++			at := rawAt.UTC().Truncate(time.Microsecond)
+ 			value := model.Trip{ID: id, Status: tt.status}
+ 			tx.EXPECT().Do(ctx, gomock.Any()).DoAndReturn(func(ctx context.Context, fn func(context.Context) error) error {
+ 				if tt.txErr != nil {
+@@ -56,7 +58,7 @@
+ 			if tt.txErr == nil {
+ 				repo.EXPECT().Get(ctx, id).Return(value, tt.readErr)
+ 				if tt.readErr == nil {
+-					clock.EXPECT().Now().Return(at)
++					clock.EXPECT().Now().Return(rawAt)
+ 					if tt.status == trip.Active {
+ 						value.Status = trip.Completed
+ 						value.FinishedAt = &at
+@@ -71,10 +73,16 @@
+ 			if tt.wantErr == nil {
+ 				events.EXPECT().Completed(ctx)
+ 			}
+-			u := finish.New(repo, history, tx, clock, events, slog.New(slog.NewTextHandler(io.Discard, nil)))
++			var logs bytes.Buffer
++			u := finish.New(repo, history, tx, clock, events, slog.New(slog.NewJSONHandler(&logs, nil)))
+ 			got, err := u.Finish(ctx, id)
+ 			if !errors.Is(err, tt.wantErr) {
+ 				t.Fatalf("error=%v,want %v", err, tt.wantErr)
++			}
++			if tt.wantErr == nil {
++				assertBusinessLog(t, logs.Bytes(), "trip completed", got.ID)
++			} else if logs.Len() != 0 {
++				t.Fatal("failed transaction emitted a business log")
+ 			}
+ 			if tt.wantErr != nil {
+ 				if !reflect.DeepEqual(got, model.Trip{}) {
+@@ -88,3 +96,18 @@
+ 		})
+ 	}
+ }
++
++func assertBusinessLog(t *testing.T, data []byte, message string, id uuid.UUID) {
++	t.Helper()
++	var event struct {
++		Message string `json:"msg"`
++		Level   string `json:"level"`
++		TripID  string `json:"trip_id"`
++	}
++	if err := json.Unmarshal(data, &event); err != nil {
++		t.Fatalf("business log: %v", err)
++	}
++	if event.Message != message || event.Level != "INFO" || event.TripID != id.String() {
++		t.Fatalf("business log=%s", data)
++	}
++}

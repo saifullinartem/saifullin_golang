@@ -1,0 +1,12 @@
+{
+  "exit_code": 1,
+  "log": {
+    "time": "2026-11-06T21:25:34.800223+03:00",
+    "level": "ERROR",
+    "msg": "trip service stopped",
+    "service": "trip-service",
+    "error": "required environment variable DATABASE_URL is not set",
+    "trace_id": "",
+    "span_id": ""
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "collector_replicas": 0,
+  "startup": "ok",
+  "ready": 200,
+  "create": 201,
+  "get": 200,
+  "finish": 200,
+  "shutdown_exit_code": 0
+}

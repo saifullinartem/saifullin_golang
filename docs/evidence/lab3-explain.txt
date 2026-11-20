@@ -1,0 +1,22 @@
+PostgreSQL. 10 000 поездок, из них 4 000 активных. Статистика обновлена командой ANALYZE.
+Проверка запроса с курсором и LIMIT 100. Настройки планировщика по умолчанию.
+
+PREPARE stale_trip_batch(interval,int,timestamptz,uuid) AS
+SELECT id, user_id, driver_id, start_latitude, start_longitude, end_latitude, end_longitude, price, status, started_at, finished_at, last_position_at, COALESCE(last_position_at, started_at) AS stale_at
+		FROM trips
+		WHERE status = 'active' AND COALESCE(last_position_at, started_at) < now() - $1::interval
+	 AND (COALESCE(last_position_at, started_at), id) > ($3::timestamptz, $4::uuid) ORDER BY COALESCE(last_position_at, started_at), id LIMIT $2;
+SELECT count(*) AS trips FROM trips;
+EXPLAIN (ANALYZE, BUFFERS) EXECUTE stale_trip_batch('60 seconds', 100, now()-interval '2000 seconds', md5('trip2000')::uuid);
+
+ Limit  (cost=0.29..54.11 rows=100 width=128) (actual time=0.006..0.021 rows=100.00 loops=1)
+   Buffers: shared hit=6
+   ->  Index Scan using trips_stale_positions_idx on trips  (cost=0.29..428.18 rows=795 width=128) (actual time=0.006..0.017 rows=100.00 loops=1)
+         Index Cond: ((status = 'active'::text) AND (COALESCE(last_position_at, started_at) < (now() - '00:01:00'::interval)) AND (ROW(COALESCE(last_position_at, started_at), id) > ROW('2026-11-20 20:24:49.176472+03'::timestamp with time zone, '9f88597d-e22c-2853-f9d2-dce6912c0f4b'::uuid)))
+         Index Searches: 1
+         Buffers: shared hit=6
+ Planning:
+   Buffers: shared hit=66
+ Planning Time: 0.668 ms
+ Execution Time: 0.579 ms
+(10 rows)

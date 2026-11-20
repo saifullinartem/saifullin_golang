@@ -1,0 +1,132 @@
+[
+  {
+    "name": "build",
+    "command": [
+      "go",
+      "build",
+      "./..."
+    ],
+    "started_at": "2026-11-06T21:14:09.199140+03:00",
+    "seconds": 3.183,
+    "exit_code": 0,
+    "output": "build.txt"
+  },
+  {
+    "name": "generate",
+    "command": [
+      "make",
+      "generate"
+    ],
+    "started_at": "2026-11-06T21:14:12.416234+03:00",
+    "seconds": 2.467,
+    "exit_code": 0,
+    "output": "generate.txt"
+  },
+  {
+    "name": "lint",
+    "command": [
+      "make",
+      "lint"
+    ],
+    "started_at": "2026-11-06T21:14:14.896910+03:00",
+    "seconds": 1.255,
+    "exit_code": 0,
+    "output": "lint.txt"
+  },
+  {
+    "name": "unit",
+    "command": [
+      "make",
+      "test"
+    ],
+    "started_at": "2026-11-06T21:14:16.151913+03:00",
+    "seconds": 1.594,
+    "exit_code": 0,
+    "output": "unit.txt"
+  },
+  {
+    "name": "repeat",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-count=2",
+      "./..."
+    ],
+    "started_at": "2026-11-06T21:14:17.745980+03:00",
+    "seconds": 5.774,
+    "exit_code": 0,
+    "output": "repeat.txt"
+  },
+  {
+    "name": "integration",
+    "command": [
+      "make",
+      "test-integration"
+    ],
+    "started_at": "2026-11-06T21:14:23.519899+03:00",
+    "seconds": 3.143,
+    "exit_code": 0,
+    "output": "integration.txt"
+  },
+  {
+    "name": "mutation-after",
+    "command": [
+      "make",
+      "test-mutation"
+    ],
+    "started_at": "2026-11-06T21:14:26.663269+03:00",
+    "seconds": 21.378,
+    "exit_code": 0,
+    "output": "mutation-after.txt"
+  },
+  {
+    "name": "mutation-before-domain",
+    "command": [
+      "env",
+      "GOFLAGS=-race",
+      "GOTOOLCHAIN=go1.26.0",
+      "/Users/saifullinartem/saifullin_golang/bin/gremlins",
+      "unleash",
+      "internal/domain",
+      "--output",
+      "/Users/saifullinartem/saifullin_golang/docs/mutation/before-domain.json"
+    ],
+    "started_at": "2026-11-06T21:14:48.073203+03:00",
+    "seconds": 7.591,
+    "exit_code": 0,
+    "output": "mutation-before-domain.txt"
+  },
+  {
+    "name": "mutation-before-usecase",
+    "command": [
+      "env",
+      "GOFLAGS=-race",
+      "GOTOOLCHAIN=go1.26.0",
+      "/Users/saifullinartem/saifullin_golang/bin/gremlins",
+      "unleash",
+      "internal/usecase",
+      "--output",
+      "/Users/saifullinartem/saifullin_golang/docs/mutation/before-usecase.json"
+    ],
+    "started_at": "2026-11-06T21:14:55.664740+03:00",
+    "seconds": 6.121,
+    "exit_code": 0,
+    "output": "mutation-before-usecase.txt"
+  },
+  {
+    "name": "mutation-before-supplemental",
+    "command": [
+      "python3",
+      "scripts/test_mutation.py",
+      "--phase",
+      "before",
+      "--output",
+      "docs/mutation/before-supplemental.json"
+    ],
+    "started_at": "2026-11-06T21:15:01.795399+03:00",
+    "seconds": 18.346,
+    "exit_code": 0,
+    "output": "mutation-before-supplemental.txt"
+  }
+]

@@ -1,0 +1,1 @@
+ok  	github.com/saifullinartem/saifullin_golang/internal/repository/trip	2.377s

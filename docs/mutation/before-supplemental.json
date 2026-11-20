@@ -1,0 +1,89 @@
+{
+  "phase": "before",
+  "command": "go test -race -count=1 -json <package>",
+  "mutations": [
+    {
+      "id": "validation_without_field",
+      "file": "internal/domain/trip/errors.go",
+      "original": "e.Field + \": \" + e.Reason",
+      "replacement": "\": \" + e.Reason",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.618,
+      "test_output": ""
+    },
+    {
+      "id": "validation_without_reason",
+      "file": "internal/domain/trip/errors.go",
+      "original": "e.Field + \": \" + e.Reason",
+      "replacement": "e.Field + \": \"",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.672,
+      "test_output": ""
+    },
+    {
+      "id": "create_without_utc",
+      "file": "internal/usecase/trip/create/usecase.go",
+      "original": ".Now().UTC()",
+      "replacement": ".Now()",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.665,
+      "test_output": ""
+    },
+    {
+      "id": "create_keep_nanoseconds",
+      "file": "internal/usecase/trip/create/usecase.go",
+      "original": "Truncate(time.Microsecond)",
+      "replacement": "Truncate(time.Nanosecond)",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.645,
+      "test_output": ""
+    },
+    {
+      "id": "create_without_log",
+      "file": "internal/usecase/trip/create/usecase.go",
+      "original": "\ts.logger.InfoContext(ctx, \"trip created\", \"trip_id\", created.ID)\n",
+      "replacement": "",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.635,
+      "test_output": ""
+    },
+    {
+      "id": "finish_without_utc",
+      "file": "internal/usecase/trip/finish/usecase.go",
+      "original": ".Now().UTC()",
+      "replacement": ".Now()",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.653,
+      "test_output": ""
+    },
+    {
+      "id": "finish_keep_nanoseconds",
+      "file": "internal/usecase/trip/finish/usecase.go",
+      "original": "Truncate(time.Microsecond)",
+      "replacement": "Truncate(time.Nanosecond)",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.75,
+      "test_output": ""
+    },
+    {
+      "id": "finish_without_log",
+      "file": "internal/usecase/trip/finish/usecase.go",
+      "original": "\ts.logger.InfoContext(ctx, \"trip completed\", \"trip_id\", id)\n",
+      "replacement": "",
+      "status": "LIVED",
+      "failed_tests": [],
+      "elapsed_seconds": 1.658,
+      "test_output": ""
+    }
+  ],
+  "mutants_total": 8,
+  "mutants_killed": 0,
+  "mutants_lived": 8
+}

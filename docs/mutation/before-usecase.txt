@@ -1,0 +1,18 @@
+Starting...
+Gathering coverage... done in 2.41023675s
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:29:34
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:34:52
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:37:130
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:42:9
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:32:10
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:35:79
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:39:10
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:43:148
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:48:9
+      KILLED CONDITIONALS_NEGATION at trip/get/usecase.go:17:9
+
+Mutation testing completed in 3 seconds 641 milliseconds
+Killed: 10, Lived: 0, Not covered: 0
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 100.00%
+Mutator coverage: 100.00%

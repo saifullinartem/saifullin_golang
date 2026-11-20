@@ -1,0 +1,41 @@
+go test -race ./...
+?   	github.com/saifullinartem/saifullin_golang/api	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/cmd/trip-service	3.133s
+?   	github.com/saifullinartem/saifullin_golang/internal/config	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/container	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/domain/trip	(cached)
+ok  	github.com/saifullinartem/saifullin_golang/internal/http	2.741s
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/domainerror	(cached)
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/middleware	2.433s
+?   	github.com/saifullinartem/saifullin_golang/internal/http/respond	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/response	(cached)
+?   	github.com/saifullinartem/saifullin_golang/internal/http/routing	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/http/trip/convert	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/trip/create	(cached)
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/trip/finish	(cached)
+ok  	github.com/saifullinartem/saifullin_golang/internal/http/trip/get	(cached)
+?   	github.com/saifullinartem/saifullin_golang/internal/infra/postgres	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/infra/postgres/transaction	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/infra/telemetry	(cached)
+?   	github.com/saifullinartem/saifullin_golang/internal/model	[no test files]
+?   	github.com/saifullinartem/saifullin_golang/internal/repository/trip	[no test files]
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/create	(cached)
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/finish	(cached)
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/get	(cached)
+go test -race -coverprofile=coverage.out ./internal/domain/... ./internal/usecase/...
+ok  	github.com/saifullinartem/saifullin_golang/internal/domain/trip	(cached)	coverage: 100.0% of statements
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/create	(cached)	coverage: 100.0% of statements
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/finish	(cached)	coverage: 100.0% of statements
+ok  	github.com/saifullinartem/saifullin_golang/internal/usecase/trip/get	(cached)	coverage: 100.0% of statements
+go tool cover -func=coverage.out
+github.com/saifullinartem/saifullin_golang/internal/domain/trip/errors.go:17:		Error		100.0%
+github.com/saifullinartem/saifullin_golang/internal/domain/trip/errors.go:19:		Unwrap		100.0%
+github.com/saifullinartem/saifullin_golang/internal/domain/trip/trip.go:32:		Finish		100.0%
+github.com/saifullinartem/saifullin_golang/internal/domain/trip/trip.go:49:		Validate	100.0%
+github.com/saifullinartem/saifullin_golang/internal/usecase/trip/create/usecase.go:24:	New		100.0%
+github.com/saifullinartem/saifullin_golang/internal/usecase/trip/create/usecase.go:28:	Create		100.0%
+github.com/saifullinartem/saifullin_golang/internal/usecase/trip/finish/usecase.go:24:	New		100.0%
+github.com/saifullinartem/saifullin_golang/internal/usecase/trip/finish/usecase.go:28:	Finish		100.0%
+github.com/saifullinartem/saifullin_golang/internal/usecase/trip/get/usecase.go:14:	New		100.0%
+github.com/saifullinartem/saifullin_golang/internal/usecase/trip/get/usecase.go:15:	Get		100.0%
+total:											(statements)	100.0%

@@ -1,0 +1,23 @@
+//go:generate go tool mockgen -source contract.go -destination mocks_test.go -package create_test
+package create
+
+import (
+	"context"
+	"time"
+
+	"github.com/saifullinartem/saifullin_golang/internal/model"
+)
+
+type tripRepository interface {
+	Create(context.Context, model.Trip) error
+}
+type historyRepository interface {
+	Add(context.Context, model.StatusChange) error
+}
+type txManager interface {
+	Do(context.Context, func(context.Context) error) error
+}
+type (
+	events interface{ Created(context.Context) }
+	clock  interface{ Now() time.Time }
+)

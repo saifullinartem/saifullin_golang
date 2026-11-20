@@ -1,0 +1,63 @@
+mkdir -p docs/mutation
+GOFLAGS=-race GOTOOLCHAIN=go1.26.0 ./bin/gremlins unleash internal/domain --threshold-efficacy=100 --threshold-mcover=100 --output docs/mutation/current-domain.json > docs/mutation/current-domain.txt 2>&1
+cat docs/mutation/current-domain.txt
+Starting...
+Gathering coverage... done in 122.780125ms
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:50:14
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:33:14
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:53:16
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:56:13
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:56:13
+      KILLED INVERT_LOGICAL at trip/trip.go:63:61
+      KILLED INVERT_LOGICAL at trip/trip.go:63:35
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:63:55
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:63:55
+      KILLED INVERT_NEGATIVES at trip/trip.go:63:57
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:63:81
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:63:81
+      KILLED INVERT_LOGICAL at trip/trip.go:66:64
+      KILLED INVERT_LOGICAL at trip/trip.go:66:36
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:66:57
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:66:57
+      KILLED INVERT_NEGATIVES at trip/trip.go:66:59
+      KILLED CONDITIONALS_BOUNDARY at trip/trip.go:66:85
+      KILLED CONDITIONALS_NEGATION at trip/trip.go:66:85
+
+Mutation testing completed in 6 seconds 260 milliseconds
+Killed: 19, Lived: 0, Not covered: 0
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 100.00%
+Mutator coverage: 100.00%
+GOFLAGS=-race GOTOOLCHAIN=go1.26.0 ./bin/gremlins unleash internal/usecase --threshold-efficacy=100 --threshold-mcover=100 --output docs/mutation/current-usecase.json > docs/mutation/current-usecase.txt 2>&1
+cat docs/mutation/current-usecase.txt
+Starting...
+Gathering coverage... done in 249.633708ms
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:29:34
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:34:52
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:37:130
+      KILLED CONDITIONALS_NEGATION at trip/create/usecase.go:42:9
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:32:10
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:35:79
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:39:10
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:43:148
+      KILLED CONDITIONALS_NEGATION at trip/finish/usecase.go:48:9
+      KILLED CONDITIONALS_NEGATION at trip/get/usecase.go:17:9
+
+Mutation testing completed in 3 seconds 600 milliseconds
+Killed: 10, Lived: 0, Not covered: 0
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 100.00%
+Mutator coverage: 100.00%
+python3 scripts/test_mutation.py --phase after --output docs/mutation/current-supplemental.json > docs/mutation/current-supplemental.txt 2>&1
+cat docs/mutation/current-supplemental.txt
+KILLED validation_without_field
+KILLED validation_without_reason
+KILLED create_without_utc
+KILLED create_keep_nanoseconds
+KILLED create_without_log
+KILLED finish_without_utc
+KILLED finish_keep_nanoseconds
+KILLED finish_without_log
+Total: 8, killed: 8, lived: 0
+python3 scripts/test_mutation.py --phase after --summary-prefix docs/mutation/current --output docs/mutation/current-summary.json
+{"mutants_total": 37, "mutants_killed": 37, "mutants_lived": 0}
